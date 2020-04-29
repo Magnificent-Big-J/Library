@@ -2,10 +2,10 @@
 
 namespace App\Http\Requests;
 
-use App\Book;
+use App\Author;
 use Illuminate\Foundation\Http\FormRequest;
 
-class BooksRequest extends FormRequest
+class AuthorRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,21 +25,24 @@ class BooksRequest extends FormRequest
     public function rules()
     {
         return [
-            'title' => 'required',
-            'author' => 'required',
+            'name' => 'required',
+            'dob' => 'required'
         ];
     }
 
+    /**
+     *
+     */
     public function store()
     {
-        Book::create([
-            'title' => $this->title,
-            'author' => $this->author,
-        ]);
+        Author::create($this->all());
     }
-    public function bookUpdate($book)
-    {
-            $book->update($this->all());
 
+    /**
+     * @param $author
+     */
+    public function updateAuthor($author)
+    {
+        $author->update($this->all());
     }
 }

@@ -20,7 +20,7 @@ trait Reservations{
             ->whereNotNull('check_out_at')
             ->whereNull('check_in_at')
             ->first();
-        if (is_null($user)){
+        if (is_null($reservation)){
             throw new \Exception();
         }
         $reservation->update([

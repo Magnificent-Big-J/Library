@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Unit;
 
 use App\Book;
 use App\Reservation;
@@ -76,4 +76,7 @@ class BookReservationTest extends TestCase
 
         $book->checkin($user);
     }
+
+
+
 }

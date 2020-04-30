@@ -14,3 +14,9 @@
 
 Route::resource('books','BookController');
 Route::resource('authors','AuthorController');
+Route::post('/checkout/{book}','CheckoutController@store')->name('reservation.checkout');
+Route::post('/checkin/{book}','CheckinController@store')->name('reservation.checkin');
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');

@@ -9,17 +9,24 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class BookTest extends TestCase
 {
-    use RefreshDatabase;
+    use RefreshDatabase, WithFaker;
 
     /** @test */
     public function an_author_id_is_recorded()
     {
-        Book::create([
-            'title' => 'New Title',
-            'author_id' => 1
-        ]);
+        Book::create( $this->getData());
 
         $this->assertCount(1, Book::all());
+    }
+    private function getData()
+    {
+        return [
+            'title' => 'New Title',
+            'author_id' => [
+                'name' => 'Joel Mnisi',
+                'dob' => '1989-12-21'
+            ]
+        ];
     }
 
 }

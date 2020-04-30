@@ -1,0 +1,79 @@
+<?php
+
+namespace Tests\Feature;
+
+use App\Book;
+use App\Reservation;
+use App\User;
+use Tests\TestCase;
+use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+
+class BookReservationTest extends TestCase
+{
+    use RefreshDatabase;
+    /** @test **/
+    public function a_book_can_check_out()
+    {
+        $book = factory(Book::class)->create();
+        $user = factory(User::class)->create();
+
+        $book->checkout($user);
+
+        $reservation = Reservation::all();
+        $this->assertCount(1, $reservation);
+        $this->assertEquals($user->id, $reservation->first()->user_id);
+        $this->assertEquals($book->id, $reservation->first()->book_id);
+        $this->assertEquals(now(), $reservation->first()->check_out_at);
+    }
+    /** @test **/
+    public function a_book_can_be_returned()
+    {
+        $book = factory(Book::class)->create();
+        $user = factory(User::class)->create();
+
+        $book->checkout($user);
+        $book->checkin($user);
+
+        $reservation = Reservation::all();
+        $this->assertCount(1, $reservation);
+        $this->assertEquals($user->id, $reservation->first()->user_id);
+        $this->assertEquals($book->id, $reservation->first()->book_id);
+        $this->assertEquals(now(), $reservation->first()->check_in_at);
+    }
+    /** @test **/
+    public function a_user_can_check_out_a_book_twice()
+    {
+        $book = factory(Book::class)->create();
+        $user = factory(User::class)->create();
+
+        $book->checkout($user);
+        $book->checkin($user);
+        $book->checkout($user);
+
+        $reservation = Reservation::all();
+
+        $this->assertCount(2, $reservation);
+        $this->assertEquals($user->id, Reservation::find(2)->user_id);
+        $this->assertEquals($book->id, Reservation::find(2)->book_id);
+        $this->assertNull(Reservation::find(2)->check_in_at);
+        $this->assertEquals(now(), $reservation->first()->check_out_at);
+
+        $book->checkin($user);
+
+        $this->assertCount(2, $reservation);
+        $this->assertEquals($user->id, Reservation::find(2)->user_id);
+        $this->assertEquals($book->id, Reservation::find(2)->book_id);
+        $this->assertNotNull(Reservation::find(2)->check_in_at);
+        $this->assertEquals(now(), Reservation::find(2)->check_in_at);
+    }
+    /** @test **/
+    public function if_not_checked_out_exception_is_thrown()
+    {
+        $this->expectException(\Exception::class);
+        $book = factory(Book::class)->create();
+        $user = factory(User::class)->create();
+
+        $book->checkin($user);
+    }
+}

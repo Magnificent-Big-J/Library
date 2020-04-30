@@ -70,6 +70,7 @@ class BookController extends Controller
      */
     public function update(BooksRequest $request, Book $book)
     {
+
         $request->bookUpdate($book);
 
         return redirect()->route('books.edit', $book->id);

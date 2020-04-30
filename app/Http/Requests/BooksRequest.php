@@ -26,7 +26,7 @@ class BooksRequest extends FormRequest
     {
         return [
             'title' => 'required',
-            'author' => 'required',
+            'author_id' => 'required',
         ];
     }
 
@@ -34,12 +34,15 @@ class BooksRequest extends FormRequest
     {
         Book::create([
             'title' => $this->title,
-            'author' => $this->author,
+            'author_id' => $this->author_id,
         ]);
     }
     public function bookUpdate($book)
     {
-            $book->update($this->all());
+
+        $book->title = $this->title;
+        $book->author_id = $this->author_id;
+        $book->save();
 
     }
 }

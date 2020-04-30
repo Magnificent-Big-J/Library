@@ -8,6 +8,9 @@ use Faker\Generator as Faker;
 $factory->define(Book::class, function (Faker $faker) {
     return [
         'title' => $faker->paragraph,
-        'author' => $faker->firstName .' ' . $faker->lastName
+        'author_id' => [
+            'name' => $faker->firstName .' '. $faker->lastName,
+            'dob' => now()->subYears(rand(10,20))
+        ]
     ];
 });
